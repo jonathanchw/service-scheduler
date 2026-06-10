@@ -2,11 +2,11 @@
 
 Mobile-first scheduling and appointment management app for field-service companies.
 
-The first target business is Refrigo, a Buenos Aires-based climatization service company that repairs, maintains, installs, and inspects air conditioners, refrigerators, HVAC systems, coolers, and related equipment.
+The product is designed for companies that send technicians to client locations, such as climatization, HVAC, refrigeration, appliance repair, maintenance, and installation businesses.
 
 ## Product Direction
 
-Service Scheduler starts as a Refrigo-branded real business tool, while keeping the architecture ready for future multi-company support.
+Service Scheduler starts as a company-branded real business tool, while keeping the architecture ready for future multi-company support.
 
 The MVP focuses on:
 

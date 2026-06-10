@@ -2,11 +2,11 @@
 
 ## 1. Product Summary
 
-Service Scheduler is a mobile-first scheduling and appointment management PWA for field-service companies. The first real business using it will be Refrigo, a Buenos Aires-based climatization service company that repairs, maintains, installs, and inspects air conditioners, refrigerators, HVAC systems, coolers, and related equipment.
+Service Scheduler is a mobile-first scheduling and appointment management PWA for field-service companies. It is designed for businesses that send technicians to client locations, such as climatization, HVAC, refrigeration, appliance repair, maintenance, and installation companies.
 
 The MVP should solve one main problem: let clients request service appointments easily while giving the company supervisor control over technician assignment, appointment confirmation, and daily operations.
 
-The app should launch as a Refrigo-branded product, but the architecture should keep future multi-company support in mind.
+The app should launch as a company-branded product, but the architecture should keep future multi-company support in mind.
 
 ## 2. MVP Goals
 
@@ -29,7 +29,7 @@ The app should launch as a Refrigo-branded product, but the architecture should 
 - Technician vacation or holiday management.
 - Image/video upload.
 - Full WhatsApp Business API automation.
-- Full SaaS onboarding, billing, and tenant self-registration.
+- Full SaaS onboarding, billing, and company self-registration.
 
 ## 4. Target Users
 
@@ -225,7 +225,7 @@ AWS can be considered later, but Vercel plus Supabase is the recommended MVP pat
 
 ### `organizations`
 
-Represents each company using the app. Refrigo is the first organization.
+Represents each company using the app. In the database and code, one company is represented as one organization.
 
 Key fields:
 
@@ -365,7 +365,7 @@ Key fields:
 ### Public Pages
 
 - `/`
-  - Refrigo landing page.
+  - Company-branded landing page.
 - `/book`
   - Client booking form.
 - `/appointment/[token]`
@@ -425,7 +425,7 @@ Key fields:
 ### Phase 4: Multi-Company Platform
 
 - Company onboarding.
-- Tenant administration.
+- Company administration.
 - Subscription billing.
 - Branding per company.
 - Advanced permissions.

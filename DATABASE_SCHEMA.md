@@ -2,7 +2,7 @@
 
 This document describes the initial Supabase Postgres schema direction for Service Scheduler.
 
-The schema should support Refrigo as the first organization while keeping future multi-company use possible.
+The schema should support one initial company while keeping future multi-company use possible.
 
 ## 1. General Conventions
 
@@ -55,7 +55,7 @@ note_added
 
 ## `organizations`
 
-Represents companies using the platform. Refrigo is the first organization.
+Represents companies using the platform. In the technical model, each company is stored as an organization.
 
 | Column | Type | Notes |
 | --- | --- | --- |
@@ -137,7 +137,7 @@ Recommended indexes:
 
 Represents service types offered by an organization.
 
-Initial Refrigo services:
+Initial service examples:
 
 - Repair
 - Maintenance
@@ -317,10 +317,10 @@ Recommended RLS direction:
 
 ## 7. MVP Seed Data
 
-Initial organization:
+Initial organization example:
 
-- Name: Refrigo
-- Slug: `refrigo`
+- Name: configured from `SEED_ORGANIZATION_NAME`
+- Slug: configured from `SEED_ORGANIZATION_SLUG`
 - Timezone: `America/Argentina/Buenos_Aires`
 - Default locale: `es`
 
