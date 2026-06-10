@@ -1,6 +1,6 @@
 # Roadmap
 
-This roadmap organizes Service Scheduler into practical phases. The first goal is to deliver a useful Refrigo MVP for real daily operations before expanding into advanced business features or multi-company SaaS behavior.
+This roadmap organizes Service Scheduler into practical phases. The first goal is to deliver a useful company-branded MVP for real daily operations before expanding into advanced business features or multi-company SaaS behavior.
 
 ## Phase 0: Project Foundation
 
@@ -26,7 +26,7 @@ Success criteria:
 - Locale routing works.
 - Supabase environment variables are documented.
 
-## Phase 1: Refrigo MVP
+## Phase 1: Company MVP
 
 Goal: deliver the core booking and internal scheduling workflow.
 
@@ -100,7 +100,7 @@ Success criteria:
 - Supervisor can confirm and assign technicians from mobile.
 - Technicians can see appointments from mobile.
 - The app prevents confirmed overbooking.
-- Refrigo can use the app for real appointment management.
+- The first company can use the app for real appointment management.
 
 ## Phase 2: Operations Improvements
 
@@ -123,7 +123,7 @@ Success criteria:
 
 - Supervisor spends less time manually following up.
 - Technicians receive clearer assignment communication.
-- Refrigo has better visibility into daily and weekly workload.
+- The company has better visibility into daily and weekly workload.
 
 ## Phase 3: Business Features
 
@@ -146,12 +146,12 @@ Potential deliverables:
 
 Success criteria:
 
-- Refrigo can track business outcomes, not only appointment scheduling.
+- The company can track business outcomes, not only appointment scheduling.
 - Supervisor can understand completed work, pending quotes, and payment state.
 
 ## Phase 4: Multi-Company Platform
 
-Goal: evolve from a Refrigo-first tool into a reusable platform for other field-service companies.
+Goal: evolve from a company-first tool into a reusable platform for other field-service companies.
 
 Potential deliverables:
 
@@ -159,7 +159,7 @@ Potential deliverables:
 - Company-level branding.
 - Per-company service configuration.
 - Per-company working hours.
-- Tenant administration.
+- Company administration.
 - Advanced role permissions.
 - Subscription billing.
 - Usage limits.
@@ -169,7 +169,7 @@ Potential deliverables:
 Success criteria:
 
 - More than one company can use the app safely.
-- Tenant data is isolated.
+- Company data is isolated.
 - Each company can configure its own services and settings.
 
 ## Explicitly Not In MVP
@@ -204,9 +204,9 @@ These features should not block the first useful release:
 12. Client secure appointment view.
 13. Email notifications.
 14. Mobile polish.
-15. Deploy and test with Refrigo.
+15. Deploy and test with the first company.
 
 ## Product Principle
 
-Build the smallest version that Refrigo can actually use with real clients and technicians. Keep future multi-company support in the data model and architecture, but do not build SaaS platform features until the Refrigo workflow is working in production.
+Build the smallest version that the first company can actually use with real clients and technicians. Keep future multi-company support in the data model and architecture, but do not build SaaS platform features until the first company workflow is working in production.
 

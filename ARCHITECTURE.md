@@ -2,7 +2,7 @@
 
 ## 1. System Overview
 
-Service Scheduler is a mobile-first web application for field-service companies. The first tenant and brand is Refrigo, but the system should be designed so other companies can use the same platform later.
+Service Scheduler is a mobile-first web application for field-service companies. The first deployment can be branded for a specific company, but the system should be designed so other companies can use the same platform later.
 
 The MVP architecture is:
 
@@ -12,7 +12,7 @@ The MVP architecture is:
 - Authenticated internal dashboard.
 - Supabase Postgres database.
 - Supabase Auth for internal users.
-- Supabase Row Level Security for tenant and role boundaries.
+- Supabase Row Level Security for organization and role boundaries.
 - Vercel deployment.
 - Email notifications through a transactional provider.
 - WhatsApp manual links for MVP.
@@ -79,24 +79,26 @@ Internal users sign in with Supabase Auth.
 
 Code, folder names, database names, and internal identifiers should be written in English.
 
-## 4. Tenant Model
+## 4. Company And Organization Model
 
-The initial UI can be Refrigo-specific, but the data model should include `organization_id` from the beginning.
+The user-facing product language should use "company." The technical code and database model should use "organization."
+
+The initial UI can be company-branded, but the data model should include `organization_id` from the beginning.
 
 This gives the project future multi-company support without requiring full SaaS features in the MVP.
 
 MVP behavior:
 
-- One organization exists: Refrigo.
-- Internal users belong to Refrigo.
-- Public booking creates appointments for Refrigo.
+- One organization exists for the initial company.
+- Internal users belong to that organization.
+- Public booking creates appointments for that organization.
 
 Future behavior:
 
 - Multiple organizations.
 - Per-company branding.
 - Per-company settings.
-- Tenant-level permissions.
+- Organization-level permissions.
 - Company onboarding and billing.
 
 ## 5. Role Model
@@ -129,7 +131,7 @@ Core rules:
 - A single appointment can have multiple technicians.
 - The supervisor makes the final assignment and duration decision.
 
-Default working hours for Refrigo:
+Default working hours for the initial company:
 
 - Monday to Friday: 08:00 to 18:00.
 - Saturday: 09:00 to 16:00.
@@ -237,8 +239,8 @@ This is a starting point, not a strict rule. The final structure should follow t
 - Keep the client booking experience simple.
 - Put operational complexity in the supervisor dashboard.
 - Do not expose technician choice to clients.
-- Keep Refrigo branding at the UI level and tenant data level.
+- Keep company branding at the UI level and organization data level.
 - Keep reusable product logic generic.
 - Prefer boring, low-cost infrastructure for the MVP.
-- Avoid building SaaS platform features before Refrigo is useful in production.
+- Avoid building SaaS platform features before the first company deployment is useful in production.
 
