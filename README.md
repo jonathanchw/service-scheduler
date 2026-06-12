@@ -110,7 +110,6 @@ Quality checks:
 ```sh
 npm run lint
 npm run typecheck
-npm run db:validate
 npm run format:check
 npm run build
 ```
