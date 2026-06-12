@@ -151,8 +151,6 @@ create table company_settings (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references organizations(id) on delete cascade,
   working_hours jsonb not null default '{}'::jsonb,
-  enabled_locales text[] not null default array['es', 'en', 'pt'],
-  status_tracking_enabled boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint company_settings_organization_id_key unique (organization_id)
