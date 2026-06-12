@@ -110,9 +110,14 @@ Quality checks:
 ```sh
 npm run lint
 npm run typecheck
+npm run db:validate
 npm run format:check
 npm run build
 ```
+
+Database workflow:
+
+- [`docs/database.md`](./docs/database.md)
 
 ## Deployment
 

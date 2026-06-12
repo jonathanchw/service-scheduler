@@ -32,5 +32,8 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      - name: Validate database migrations
+        run: npm run db:validate
+
       - name: Build
         run: npm run build

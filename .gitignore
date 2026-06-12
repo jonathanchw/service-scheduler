@@ -7,5 +7,3 @@ out/
 .env*.local
 
 npm-debug.log*
-
-supabase/.temp/
