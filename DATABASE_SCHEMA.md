@@ -249,8 +249,6 @@ Stores organization-level configuration.
 | `id` | `uuid` | Primary key |
 | `organization_id` | `uuid` | Foreign key to `organizations.id` |
 | `working_hours` | `jsonb` | Weekly working hours |
-| `enabled_locales` | `text[]` | Example: `{es,en,pt}` |
-| `status_tracking_enabled` | `boolean` | Feature toggle |
 | `created_at` | `timestamptz` | Creation time |
 | `updated_at` | `timestamptz` | Last update time |
 
@@ -334,7 +332,5 @@ Initial services:
 
 Initial settings:
 
-- Locales: `es`, `en`, `pt`
-- Status tracking enabled: false or basic-only
 - Working hours as defined above
 
