@@ -8,6 +8,12 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:lint": "supabase db lint --local",
+    "db:validate": "supabase start && supabase db reset && supabase db lint --local",
+    "db:push": "supabase db push",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -29,6 +35,7 @@
     "eslint-config-next": "^16.2.9",
     "postcss": "^8.5.15",
     "prettier": "^3.8.4",
+    "supabase": "^2.106.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3"
   }
