@@ -94,6 +94,14 @@
         }
       }
     },
+    "timeSelection": {
+      "label": "Date and time",
+      "description": "Choose a date and available time inside working hours.",
+      "dateLabel": "Date",
+      "slotLabel": "Time",
+      "noSlots": "Choose a Monday to Saturday date to see available times.",
+      "helperText": "The selected time stays pending until a supervisor confirms the visit."
+    },
     "fields": {
       "name": {
         "label": "Name",
@@ -132,7 +140,7 @@
         "placeholder": "Contact preferences, access notes, or other helpful details."
       }
     },
-    "reviewNotice": "This screen does not create the request yet. Time selection and submission for approval will be added next.",
+    "reviewNotice": "This screen does not create the request yet. Submission for approval will be added next.",
     "cta": "Continue",
     "ctaNote": "Final confirmation stays pending until a supervisor reviews the request."
   }

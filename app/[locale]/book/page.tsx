@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { TimeSlotPicker } from "@/components/booking/time-slot-picker";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { routing } from "@/i18n/routing";
 
@@ -99,6 +100,16 @@ export default async function BookPage({
               ))}
             </div>
           </fieldset>
+
+          <TimeSlotPicker
+            dateLabel={t("timeSelection.dateLabel")}
+            description={t("timeSelection.description")}
+            helperText={t("timeSelection.helperText")}
+            label={t("timeSelection.label")}
+            noSlotsLabel={t("timeSelection.noSlots")}
+            requiredLabel={t("required")}
+            slotLabel={t("timeSelection.slotLabel")}
+          />
 
           <div className="grid gap-5 md:grid-cols-2">
             {requiredFields.map((field) => (
