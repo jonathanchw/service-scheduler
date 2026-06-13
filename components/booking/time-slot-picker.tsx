@@ -48,6 +48,7 @@ export function TimeSlotPicker({
   helperText,
 }: TimeSlotPickerProps) {
   const [date, setDate] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState("");
   const slots = useMemo(() => getSlotsForDate(date), [date]);
 
   return (
@@ -66,7 +67,10 @@ export function TimeSlotPicker({
         <input
           className="rounded-2xl border border-slate-200 px-4 py-3 text-base outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
           name="requestedDate"
-          onChange={(event) => setDate(event.target.value)}
+          onChange={(event) => {
+            setDate(event.target.value);
+            setSelectedSlot("");
+          }}
           required
           type="date"
           value={date}
@@ -83,12 +87,19 @@ export function TimeSlotPicker({
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {slots.map((slot) => (
               <label
-                className="cursor-pointer rounded-2xl border border-slate-200 px-4 py-3 text-center text-sm font-black text-slate-900 transition hover:border-sky-300 hover:bg-sky-50/50"
+                className={[
+                  "cursor-pointer rounded-2xl border px-4 py-3 text-center text-sm font-black transition",
+                  selectedSlot === slot
+                    ? "border-sky-700 bg-sky-50 text-sky-900 ring-4 ring-sky-100"
+                    : "border-slate-200 text-slate-900 hover:border-sky-300 hover:bg-sky-50/50",
+                ].join(" ")}
                 key={slot}
               >
                 <input
+                  checked={selectedSlot === slot}
                   className="sr-only"
                   name="requestedTime"
+                  onChange={() => setSelectedSlot(slot)}
                   required
                   type="radio"
                   value={slot}
