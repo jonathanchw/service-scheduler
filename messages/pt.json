@@ -94,6 +94,14 @@
         }
       }
     },
+    "timeSelection": {
+      "label": "Data e horário",
+      "description": "Escolha uma data e um horário disponível dentro do horário de atendimento.",
+      "dateLabel": "Data",
+      "slotLabel": "Horário",
+      "noSlots": "Escolha uma data de segunda a sábado para ver horários disponíveis.",
+      "helperText": "O horário escolhido fica pendente até que um supervisor confirme a visita."
+    },
     "fields": {
       "name": {
         "label": "Nome",
@@ -132,7 +140,7 @@
         "placeholder": "Preferências de contato, instruções de acesso ou outros detalhes úteis."
       }
     },
-    "reviewNotice": "Esta tela ainda não cria a solicitação. A seleção de horário e o envio para aprovação serão adicionados em seguida.",
+    "reviewNotice": "Esta tela ainda não cria a solicitação. O envio para aprovação será adicionado em seguida.",
     "cta": "Continuar",
     "ctaNote": "A confirmação final fica pendente até a revisão do supervisor."
   }
