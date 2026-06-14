@@ -99,7 +99,9 @@ export function TimeSlotPicker({
                   checked={selectedSlot === slot}
                   className="sr-only"
                   name="requestedTime"
-                  onChange={() => setSelectedSlot(slot)}
+                  onChange={() => {
+                    setSelectedSlot(slot);
+                  }}
                   required
                   type="radio"
                   value={slot}
