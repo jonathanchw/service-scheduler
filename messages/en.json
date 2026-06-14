@@ -140,8 +140,14 @@
         "placeholder": "Contact preferences, access notes, or other helpful details."
       }
     },
-    "reviewNotice": "This screen does not create the request yet. Submission for approval will be added next.",
-    "cta": "Continue",
-    "ctaNote": "Final confirmation stays pending until a supervisor reviews the request."
+    "reviewNotice": "Send the request when your details are ready. A supervisor will review it before confirming the visit.",
+    "cta": "Send request",
+    "ctaNote": "Final confirmation stays pending until a supervisor reviews the request.",
+    "confirmation": {
+      "eyebrow": "Request received",
+      "title": "Your request is pending approval.",
+      "description": "A supervisor will review the service, selected time, and submitted details before confirming the visit.",
+      "cta": "Back to home"
+    }
   }
 }

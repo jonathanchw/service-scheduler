@@ -140,8 +140,14 @@
         "placeholder": "Preferencias de contacto, referencias de acceso o detalles útiles."
       }
     },
-    "reviewNotice": "Esta pantalla todavía no crea la solicitud. En próximos pasos se agregará el envío para aprobación.",
-    "cta": "Continuar",
-    "ctaNote": "La confirmación final queda pendiente de revisión del supervisor."
+    "reviewNotice": "Enviá la solicitud cuando los datos estén listos. Un supervisor la revisará antes de confirmar la visita.",
+    "cta": "Enviar solicitud",
+    "ctaNote": "La confirmación final queda pendiente de revisión del supervisor.",
+    "confirmation": {
+      "eyebrow": "Solicitud recibida",
+      "title": "Tu solicitud quedó pendiente de aprobación.",
+      "description": "El supervisor revisará el servicio, el horario y los datos cargados antes de confirmar la visita.",
+      "cta": "Volver al inicio"
+    }
   }
 }
