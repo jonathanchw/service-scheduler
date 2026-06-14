@@ -3,6 +3,10 @@ type SupabaseEnv = {
   anonKey: string;
 };
 
+type SupabaseAdminEnv = SupabaseEnv & {
+  serviceRoleKey: string;
+};
+
 function requireEnv(name: string, value: string | undefined): string {
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);
@@ -20,6 +24,18 @@ export function getSupabaseEnv(): SupabaseEnv {
     anonKey: requireEnv(
       "NEXT_PUBLIC_SUPABASE_ANON_KEY",
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    ),
+  };
+}
+
+export function getSupabaseAdminEnv(): SupabaseAdminEnv {
+  const env = getSupabaseEnv();
+
+  return {
+    ...env,
+    serviceRoleKey: requireEnv(
+      "SUPABASE_SERVICE_ROLE_KEY",
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
     ),
   };
 }
