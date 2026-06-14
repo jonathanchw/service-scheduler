@@ -5,6 +5,8 @@ import { TimeSlotPicker } from "@/components/booking/time-slot-picker";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { routing } from "@/i18n/routing";
 
+import { createAppointmentRequest } from "./actions";
+
 type Locale = (typeof routing.locales)[number];
 
 const serviceTypes = [
@@ -40,6 +42,10 @@ export default async function BookPage({
   const { locale } = await params;
   const currentLocale = locale as Locale;
   const t = await getTranslations({ locale, namespace: "Book" });
+  const createAppointmentRequestWithLocale = createAppointmentRequest.bind(
+    null,
+    currentLocale,
+  );
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -66,7 +72,10 @@ export default async function BookPage({
           </p>
         </div>
 
-        <form className="mt-10 rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-8">
+        <form
+          action={createAppointmentRequestWithLocale}
+          className="mt-10 rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-8"
+        >
           <fieldset className="mb-8">
             <legend className="text-sm font-bold text-slate-800">
               {t("serviceType.label")}
@@ -180,7 +189,7 @@ export default async function BookPage({
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               className="rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800"
-              type="button"
+              type="submit"
             >
               {t("cta")}
             </button>
