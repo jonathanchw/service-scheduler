@@ -2,6 +2,10 @@
 
 import { redirect } from "next/navigation";
 
+import {
+  createAppointmentToken,
+  hashAppointmentToken,
+} from "@/lib/appointment-tokens";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type SupabaseAdminClient = ReturnType<typeof createSupabaseAdminClient>;
@@ -50,8 +54,8 @@ function isServiceSlug(value: string): value is ServiceSlug {
   return serviceSlugs.includes(value as ServiceSlug);
 }
 
-function getConfirmationPath(locale: string) {
-  return `/${locale}/book/confirmation`;
+function getAppointmentPath(locale: string, token: string) {
+  return `/${locale}/appointment/${token}`;
 }
 
 function getRequiredField(formData: FormData, field: BookingField) {
@@ -238,8 +242,8 @@ async function createPendingAppointment(
   booking: BookingRequest,
   timezone: string,
 ) {
-  // Temporary value until secure appointment-token links are implemented.
-  const secureTokenHash = crypto.randomUUID();
+  const secureToken = createAppointmentToken();
+  const secureTokenHash = hashAppointmentToken(secureToken);
   const requestedStartAt = createRequestedStartAt(
     booking.requestedDate,
     booking.requestedTime,
@@ -268,6 +272,8 @@ async function createPendingAppointment(
   if (appointmentError || !appointment) {
     throw new Error("Could not create appointment.");
   }
+
+  return secureToken;
 }
 
 export async function createAppointmentRequest(
@@ -285,7 +291,7 @@ export async function createAppointmentRequest(
   );
   const clientId = await findOrCreateClient(supabase, organization.id, booking);
 
-  await createPendingAppointment(
+  const secureToken = await createPendingAppointment(
     supabase,
     organization.id,
     serviceId,
@@ -294,5 +300,5 @@ export async function createAppointmentRequest(
     organization.timezone,
   );
 
-  redirect(getConfirmationPath(locale));
+  redirect(getAppointmentPath(locale, secureToken));
 }
