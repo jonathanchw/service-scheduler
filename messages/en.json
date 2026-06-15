@@ -67,6 +67,24 @@
     },
     "signOut": "Sign out"
   },
+  "DailyAgenda": {
+    "eyebrow": "Dashboard",
+    "title": "Daily agenda",
+    "description": "Review the appointment requests and confirmed visits for the selected day.",
+    "previous": "Previous",
+    "today": "Today",
+    "next": "Next",
+    "address": "Address",
+    "technicians": "Technicians",
+    "unassigned": "Unassigned",
+    "emptyTitle": "No appointments for this day.",
+    "emptyDescription": "Use the previous and next links to review another date.",
+    "statuses": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "reschedule_requested": "Reschedule requested"
+    }
+  },
   "Book": {
     "brand": "Service Scheduler",
     "eyebrow": "Appointment request",
