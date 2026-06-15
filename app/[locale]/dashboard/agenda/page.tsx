@@ -1,275 +1,22 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-
-const INITIAL_ORGANIZATION_SLUG = "demo-service-company";
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const agendaStatuses = ["pending", "confirmed", "reschedule_requested"];
-const agendaViews = ["daily", "weekly", "monthly"] as const;
-
-type AgendaView = (typeof agendaViews)[number];
-type AgendaAppointment = {
-  id: string;
-  status: string;
-  requested_start_at: string;
-  confirmed_start_at: string | null;
-  address: string;
-  city: string;
-  clients: {
-    name: string;
-  };
-  services: {
-    name: string;
-  };
-  appointment_technicians: {
-    technicians: {
-      name: string;
-    };
-  }[];
-};
-
-function parseView(value?: string): AgendaView {
-  if (value && agendaViews.includes(value as AgendaView)) {
-    return value as AgendaView;
-  }
-
-  return "daily";
-}
-
-function addDays(date: string, days: number) {
-  const value = new Date(`${date}T00:00:00.000Z`);
-  value.setUTCDate(value.getUTCDate() + days);
-
-  return value.toISOString().slice(0, 10);
-}
-
-function addMonths(date: string, months: number) {
-  const [year, month, day] = date.split("-").map(Number);
-  const value = new Date(Date.UTC(year, month - 1 + months, day));
-
-  return value.toISOString().slice(0, 10);
-}
-
-function getTimezoneOffset(date: Date, timezone: string) {
-  const timezoneDate = new Date(
-    date.toLocaleString("en-US", { timeZone: timezone }),
-  );
-
-  return timezoneDate.getTime() - date.getTime();
-}
-
-function createZonedDateTime(date: string, time: string, timezone: string) {
-  const utcGuess = new Date(`${date}T${time}:00.000Z`);
-  const timezoneOffset = getTimezoneOffset(utcGuess, timezone);
-
-  return new Date(utcGuess.getTime() - timezoneOffset).toISOString();
-}
-
-function getTodayDate(timezone: string) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: timezone,
-    year: "numeric",
-  }).formatToParts(new Date());
-
-  const year = parts.find((part) => part.type === "year")?.value;
-  const month = parts.find((part) => part.type === "month")?.value;
-  const day = parts.find((part) => part.type === "day")?.value;
-
-  return `${year}-${month}-${day}`;
-}
-
-function getDateKey(value: string, timezone: string) {
-  return new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: timezone,
-    year: "numeric",
-  }).format(new Date(value));
-}
-
-function getWeekRange(date: string) {
-  const day = new Date(`${date}T12:00:00.000Z`).getUTCDay();
-  const daysFromMonday = day === 0 ? 6 : day - 1;
-  const start = addDays(date, -daysFromMonday);
-
-  return { start, end: addDays(start, 6) };
-}
-
-function getMonthRange(date: string) {
-  const start = `${date.slice(0, 7)}-01`;
-
-  return { start, end: addDays(addMonths(start, 1), -1) };
-}
-
-function getDateRange(view: AgendaView, date: string) {
-  if (view === "weekly") {
-    return getWeekRange(date);
-  }
-
-  if (view === "monthly") {
-    return getMonthRange(date);
-  }
-
-  return { start: date, end: date };
-}
-
-function getAdjacentDate(view: AgendaView, date: string, direction: -1 | 1) {
-  if (view === "weekly") {
-    return addDays(date, direction * 7);
-  }
-
-  if (view === "monthly") {
-    return addMonths(date, direction);
-  }
-
-  return addDays(date, direction);
-}
-
-function getAgendaHref(locale: string, view: AgendaView, date: string) {
-  return `/${locale}/dashboard/agenda?view=${view}&date=${date}`;
-}
-
-function sortAppointments(appointments: AgendaAppointment[]) {
-  return [...appointments].sort((first, second) => {
-    const firstTime = first.confirmed_start_at ?? first.requested_start_at;
-    const secondTime = second.confirmed_start_at ?? second.requested_start_at;
-
-    return firstTime.localeCompare(secondTime);
-  });
-}
-
-function groupAppointmentsByDate(
-  appointments: AgendaAppointment[],
-  timezone: string,
-) {
-  const groups = new Map<string, AgendaAppointment[]>();
-
-  for (const appointment of appointments) {
-    const appointmentTime =
-      appointment.confirmed_start_at ?? appointment.requested_start_at;
-    const dateKey = getDateKey(appointmentTime, timezone);
-    const dayAppointments = groups.get(dateKey) ?? [];
-
-    dayAppointments.push(appointment);
-    groups.set(dateKey, dayAppointments);
-  }
-
-  return [...groups.entries()]
-    .sort(([firstDate], [secondDate]) => firstDate.localeCompare(secondDate))
-    .map(([date, dayAppointments]) => ({
-      date,
-      appointments: sortAppointments(dayAppointments),
-    }));
-}
-
-function formatDate(date: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: "full",
-    timeZone: "UTC",
-  }).format(new Date(`${date}T12:00:00.000Z`));
-}
-
-function formatShortDate(date: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: "medium",
-    timeZone: "UTC",
-  }).format(new Date(`${date}T12:00:00.000Z`));
-}
-
-function formatMonth(date: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
-    month: "long",
-    timeZone: "UTC",
-    year: "numeric",
-  }).format(new Date(`${date}T12:00:00.000Z`));
-}
-
-function formatTime(value: string, locale: string, timezone: string) {
-  return new Intl.DateTimeFormat(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: timezone,
-  }).format(new Date(value));
-}
-
-function formatPeriodLabel(
-  view: AgendaView,
-  selectedDate: string,
-  locale: string,
-) {
-  if (view === "weekly") {
-    const { start, end } = getWeekRange(selectedDate);
-
-    return `${formatShortDate(start, locale)} – ${formatShortDate(end, locale)}`;
-  }
-
-  if (view === "monthly") {
-    return formatMonth(selectedDate, locale);
-  }
-
-  return formatDate(selectedDate, locale);
-}
-
-async function getOrganization() {
-  const supabase = createSupabaseAdminClient();
-  const { data, error } = await supabase
-    .from("organizations")
-    .select("id, timezone")
-    .eq("slug", INITIAL_ORGANIZATION_SLUG)
-    .single();
-
-  if (error || !data) {
-    throw new Error("Organization not found.");
-  }
-
-  return {
-    id: data.id as string,
-    timezone: data.timezone as string,
-  };
-}
-
-async function getAgendaAppointments(
-  organizationId: string,
-  startDate: string,
-  endDate: string,
-  timezone: string,
-) {
-  const supabase = createSupabaseAdminClient();
-  const rangeStart = createZonedDateTime(startDate, "00:00", timezone);
-  const rangeEnd = createZonedDateTime(addDays(endDate, 1), "00:00", timezone);
-
-  const { data, error } = await supabase
-    .from("appointments")
-    .select(
-      `
-        id,
-        status,
-        requested_start_at,
-        confirmed_start_at,
-        address,
-        city,
-        clients (name),
-        services (name),
-        appointment_technicians (
-          technicians (name)
-        )
-      `,
-    )
-    .eq("organization_id", organizationId)
-    .in("status", agendaStatuses)
-    .or(
-      `and(confirmed_start_at.gte.${rangeStart},confirmed_start_at.lt.${rangeEnd}),and(confirmed_start_at.is.null,requested_start_at.gte.${rangeStart},requested_start_at.lt.${rangeEnd})`,
-    );
-
-  if (error) {
-    throw new Error("Could not load agenda appointments.");
-  }
-
-  return sortAppointments(data as unknown as AgendaAppointment[]);
-}
+import {
+  getAgendaAppointments,
+  getAgendaOrganization,
+} from "@/lib/agenda/queries";
+import { agendaViews, DATE_PATTERN } from "@/lib/agenda/types";
+import {
+  formatDate,
+  formatPeriodLabel,
+  formatTime,
+  getAdjacentDate,
+  getAgendaHref,
+  getDateRange,
+  groupAppointmentsByDate,
+  parseView,
+} from "@/lib/agenda/utils";
+import { getTodayDate } from "@/lib/datetime";
 
 export default async function AgendaPage({
   params,
@@ -280,7 +27,7 @@ export default async function AgendaPage({
 }>) {
   const { locale } = await params;
   const { date: requestedDate, view: requestedView } = await searchParams;
-  const organization = await getOrganization();
+  const organization = await getAgendaOrganization();
   const today = getTodayDate(organization.timezone);
   const selectedDate =
     requestedDate && DATE_PATTERN.test(requestedDate) ? requestedDate : today;
