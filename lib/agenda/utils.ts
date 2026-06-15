@@ -6,7 +6,23 @@ import {
   getWeekRange,
 } from "@/lib/datetime";
 
-import { agendaViews, type AgendaAppointment, type AgendaView } from "./types";
+import {
+  agendaViews,
+  DATE_PATTERN,
+  type AgendaAppointment,
+  type AgendaView,
+} from "./types";
+
+export function resolveSelectedDate(
+  requestedDate: string | undefined,
+  today: string,
+) {
+  if (requestedDate && DATE_PATTERN.test(requestedDate)) {
+    return requestedDate;
+  }
+
+  return today;
+}
 
 export function parseView(value?: string): AgendaView {
   if (value && agendaViews.includes(value as AgendaView)) {

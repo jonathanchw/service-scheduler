@@ -1,8 +1,33 @@
-import { addDays, createZonedDateTime } from "@/lib/datetime";
+import { addDays, createZonedDateTime, getTodayDate } from "@/lib/datetime";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
-import { sortAppointments } from "./utils";
-import { agendaStatuses, type AgendaAppointment } from "./types";
+import {
+  agendaStatuses,
+  type AgendaAppointment,
+  type AgendaView,
+} from "./types";
+import {
+  getDateRange,
+  groupAppointmentsByDate,
+  parseView,
+  resolveSelectedDate,
+  sortAppointments,
+} from "./utils";
+
+export type AgendaPageData = {
+  organization: {
+    id: string;
+    timezone: string;
+  };
+  today: string;
+  selectedDate: string;
+  view: AgendaView;
+  appointments: AgendaAppointment[];
+  groupedAppointments: {
+    date: string;
+    appointments: AgendaAppointment[];
+  }[];
+};
 
 const INITIAL_ORGANIZATION_SLUG = "demo-service-company";
 
@@ -62,4 +87,33 @@ export async function getAgendaAppointments(
   }
 
   return sortAppointments(data as unknown as AgendaAppointment[]);
+}
+
+export async function getAgendaPageData(searchParams: {
+  date?: string;
+  view?: string;
+}): Promise<AgendaPageData> {
+  const organization = await getAgendaOrganization();
+  const today = getTodayDate(organization.timezone);
+  const selectedDate = resolveSelectedDate(searchParams.date, today);
+  const view = parseView(searchParams.view);
+  const { start, end } = getDateRange(view, selectedDate);
+  const appointments = await getAgendaAppointments(
+    organization.id,
+    start,
+    end,
+    organization.timezone,
+  );
+
+  return {
+    organization,
+    today,
+    selectedDate,
+    view,
+    appointments,
+    groupedAppointments: groupAppointmentsByDate(
+      appointments,
+      organization.timezone,
+    ),
+  };
 }

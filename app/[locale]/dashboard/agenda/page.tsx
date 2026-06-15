@@ -1,22 +1,15 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import {
-  getAgendaAppointments,
-  getAgendaOrganization,
-} from "@/lib/agenda/queries";
-import { agendaViews, DATE_PATTERN } from "@/lib/agenda/types";
+import { getAgendaPageData } from "@/lib/agenda/queries";
+import { agendaViews } from "@/lib/agenda/types";
 import {
   formatDate,
   formatPeriodLabel,
   formatTime,
   getAdjacentDate,
   getAgendaHref,
-  getDateRange,
-  groupAppointmentsByDate,
-  parseView,
 } from "@/lib/agenda/utils";
-import { getTodayDate } from "@/lib/datetime";
 
 export default async function AgendaPage({
   params,
@@ -26,23 +19,14 @@ export default async function AgendaPage({
   searchParams: Promise<{ date?: string; view?: string }>;
 }>) {
   const { locale } = await params;
-  const { date: requestedDate, view: requestedView } = await searchParams;
-  const organization = await getAgendaOrganization();
-  const today = getTodayDate(organization.timezone);
-  const selectedDate =
-    requestedDate && DATE_PATTERN.test(requestedDate) ? requestedDate : today;
-  const view = parseView(requestedView);
-  const { start, end } = getDateRange(view, selectedDate);
-  const appointments = await getAgendaAppointments(
-    organization.id,
-    start,
-    end,
-    organization.timezone,
-  );
-  const groupedAppointments = groupAppointmentsByDate(
+  const {
+    organization,
+    today,
+    selectedDate,
+    view,
     appointments,
-    organization.timezone,
-  );
+    groupedAppointments,
+  } = await getAgendaPageData(await searchParams);
   const t = await getTranslations({ locale, namespace: "DailyAgenda" });
 
   return (
