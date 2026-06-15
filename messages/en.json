@@ -70,15 +70,20 @@
   "DailyAgenda": {
     "eyebrow": "Dashboard",
     "title": "Daily agenda",
-    "description": "Review the appointment requests and confirmed visits for the selected day.",
+    "description": "Review the appointment requests and confirmed visits for the selected period.",
+    "views": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
     "previous": "Previous",
     "today": "Today",
     "next": "Next",
     "address": "Address",
     "technicians": "Technicians",
     "unassigned": "Unassigned",
-    "emptyTitle": "No appointments for this day.",
-    "emptyDescription": "Use the previous and next links to review another date.",
+    "emptyTitle": "No appointments for this period.",
+    "emptyDescription": "Use the previous and next links to review another date or period.",
     "statuses": {
       "pending": "Pending",
       "confirmed": "Confirmed",

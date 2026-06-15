@@ -70,15 +70,20 @@
   "DailyAgenda": {
     "eyebrow": "Panel",
     "title": "Agenda diaria",
-    "description": "Revisá las solicitudes de turno y visitas confirmadas para el día seleccionado.",
+    "description": "Revisá las solicitudes de turno y visitas confirmadas para el período seleccionado.",
+    "views": {
+      "daily": "Diaria",
+      "weekly": "Semanal",
+      "monthly": "Mensual"
+    },
     "previous": "Anterior",
     "today": "Hoy",
     "next": "Siguiente",
     "address": "Dirección",
     "technicians": "Técnicos",
     "unassigned": "Sin asignar",
-    "emptyTitle": "No hay turnos para este día.",
-    "emptyDescription": "Usá los enlaces anterior y siguiente para revisar otra fecha.",
+    "emptyTitle": "No hay turnos para este período.",
+    "emptyDescription": "Usá los enlaces anterior y siguiente para revisar otra fecha o período.",
     "statuses": {
       "pending": "Pendiente",
       "confirmed": "Confirmado",

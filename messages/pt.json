@@ -70,15 +70,20 @@
   "DailyAgenda": {
     "eyebrow": "Painel",
     "title": "Agenda diária",
-    "description": "Revise as solicitações de horário e visitas confirmadas para o dia selecionado.",
+    "description": "Revise as solicitações de horário e visitas confirmadas para o período selecionado.",
+    "views": {
+      "daily": "Diária",
+      "weekly": "Semanal",
+      "monthly": "Mensal"
+    },
     "previous": "Anterior",
     "today": "Hoje",
     "next": "Próximo",
     "address": "Endereço",
     "technicians": "Técnicos",
     "unassigned": "Sem atribuição",
-    "emptyTitle": "Não há horários para este dia.",
-    "emptyDescription": "Use os links anterior e próximo para revisar outra data.",
+    "emptyTitle": "Não há horários para este período.",
+    "emptyDescription": "Use os links anterior e próximo para revisar outra data ou período.",
     "statuses": {
       "pending": "Pendente",
       "confirmed": "Confirmado",
