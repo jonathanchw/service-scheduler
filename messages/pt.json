@@ -69,7 +69,11 @@
   },
   "DailyAgenda": {
     "eyebrow": "Painel",
-    "title": "Agenda diária",
+    "titles": {
+      "daily": "Agenda diária",
+      "weekly": "Agenda semanal",
+      "monthly": "Agenda mensal"
+    },
     "description": "Revise as solicitações de horário e visitas confirmadas para o período selecionado.",
     "views": {
       "daily": "Diária",

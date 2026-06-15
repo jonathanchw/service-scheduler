@@ -69,7 +69,11 @@
   },
   "DailyAgenda": {
     "eyebrow": "Panel",
-    "title": "Agenda diaria",
+    "titles": {
+      "daily": "Agenda diaria",
+      "weekly": "Agenda semanal",
+      "monthly": "Agenda mensual"
+    },
     "description": "Revisá las solicitudes de turno y visitas confirmadas para el período seleccionado.",
     "views": {
       "daily": "Diaria",

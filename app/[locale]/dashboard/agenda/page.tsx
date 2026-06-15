@@ -306,7 +306,7 @@ export default async function AgendaPage({
         </p>
         <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <h1 className="text-4xl font-black leading-none tracking-tight">
-            {t("title")}
+            {t(`titles.${view}`)}
           </h1>
           <div className="flex flex-wrap gap-2">
             {agendaViews.map((agendaView) => (

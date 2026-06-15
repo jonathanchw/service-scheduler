@@ -69,7 +69,11 @@
   },
   "DailyAgenda": {
     "eyebrow": "Dashboard",
-    "title": "Daily agenda",
+    "titles": {
+      "daily": "Daily agenda",
+      "weekly": "Weekly agenda",
+      "monthly": "Monthly agenda"
+    },
     "description": "Review the appointment requests and confirmed visits for the selected period.",
     "views": {
       "daily": "Daily",
