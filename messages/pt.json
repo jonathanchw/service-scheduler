@@ -67,6 +67,33 @@
     },
     "signOut": "Sair"
   },
+  "DailyAgenda": {
+    "eyebrow": "Painel",
+    "titles": {
+      "daily": "Agenda diária",
+      "weekly": "Agenda semanal",
+      "monthly": "Agenda mensal"
+    },
+    "description": "Revise as solicitações de horário e visitas confirmadas para o período selecionado.",
+    "views": {
+      "daily": "Diária",
+      "weekly": "Semanal",
+      "monthly": "Mensal"
+    },
+    "previous": "Anterior",
+    "today": "Hoje",
+    "next": "Próximo",
+    "address": "Endereço",
+    "technicians": "Técnicos",
+    "unassigned": "Sem atribuição",
+    "emptyTitle": "Não há horários para este período.",
+    "emptyDescription": "Use os links anterior e próximo para revisar outra data ou período.",
+    "statuses": {
+      "pending": "Pendente",
+      "confirmed": "Confirmado",
+      "reschedule_requested": "Reagendamento solicitado"
+    }
+  },
   "Book": {
     "brand": "Service Scheduler",
     "eyebrow": "Solicitação de horário",

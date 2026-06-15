@@ -67,6 +67,33 @@
     },
     "signOut": "Cerrar sesión"
   },
+  "DailyAgenda": {
+    "eyebrow": "Panel",
+    "titles": {
+      "daily": "Agenda diaria",
+      "weekly": "Agenda semanal",
+      "monthly": "Agenda mensual"
+    },
+    "description": "Revisá las solicitudes de turno y visitas confirmadas para el período seleccionado.",
+    "views": {
+      "daily": "Diaria",
+      "weekly": "Semanal",
+      "monthly": "Mensual"
+    },
+    "previous": "Anterior",
+    "today": "Hoy",
+    "next": "Siguiente",
+    "address": "Dirección",
+    "technicians": "Técnicos",
+    "unassigned": "Sin asignar",
+    "emptyTitle": "No hay turnos para este período.",
+    "emptyDescription": "Usá los enlaces anterior y siguiente para revisar otra fecha o período.",
+    "statuses": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmado",
+      "reschedule_requested": "Reprogramación solicitada"
+    }
+  },
   "Book": {
     "brand": "Service Scheduler",
     "eyebrow": "Solicitud de turno",
