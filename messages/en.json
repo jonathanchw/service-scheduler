@@ -94,6 +94,20 @@
       "reschedule_requested": "Reschedule requested"
     }
   },
+  "PendingRequests": {
+    "eyebrow": "Dashboard",
+    "title": "Pending requests",
+    "description": "Review appointment requests awaiting supervisor approval.",
+    "address": "Address",
+    "equipment": "Equipment",
+    "emergency": "Emergency",
+    "emptyTitle": "No requests waiting for review.",
+    "emptyDescription": "New client booking requests will appear here until a supervisor confirms them.",
+    "statuses": {
+      "pending": "Pending",
+      "reschedule_requested": "Reschedule requested"
+    }
+  },
   "Book": {
     "brand": "Service Scheduler",
     "eyebrow": "Appointment request",

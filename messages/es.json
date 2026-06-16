@@ -94,6 +94,20 @@
       "reschedule_requested": "Reprogramación solicitada"
     }
   },
+  "PendingRequests": {
+    "eyebrow": "Panel",
+    "title": "Solicitudes pendientes",
+    "description": "Revisá las solicitudes de turno que esperan aprobación del supervisor.",
+    "address": "Dirección",
+    "equipment": "Equipo",
+    "emergency": "Emergencia",
+    "emptyTitle": "No hay solicitudes pendientes de revisión.",
+    "emptyDescription": "Las nuevas solicitudes de reserva aparecerán acá hasta que un supervisor las confirme.",
+    "statuses": {
+      "pending": "Pendiente",
+      "reschedule_requested": "Reprogramación solicitada"
+    }
+  },
   "Book": {
     "brand": "Service Scheduler",
     "eyebrow": "Solicitud de turno",
