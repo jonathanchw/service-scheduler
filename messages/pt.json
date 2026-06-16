@@ -94,6 +94,20 @@
       "reschedule_requested": "Reagendamento solicitado"
     }
   },
+  "PendingRequests": {
+    "eyebrow": "Painel",
+    "title": "Solicitações pendentes",
+    "description": "Revise as solicitações de horário que aguardam aprovação do supervisor.",
+    "address": "Endereço",
+    "equipment": "Equipamento",
+    "emergency": "Emergência",
+    "emptyTitle": "Não há solicitações aguardando revisão.",
+    "emptyDescription": "Novas solicitações de reserva aparecerão aqui até que um supervisor as confirme.",
+    "statuses": {
+      "pending": "Pendente",
+      "reschedule_requested": "Reagendamento solicitado"
+    }
+  },
   "Book": {
     "brand": "Service Scheduler",
     "eyebrow": "Solicitação de horário",
