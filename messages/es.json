@@ -123,6 +123,7 @@
     "notes": "Notas del cliente",
     "backToRequests": "Volver a solicitudes",
     "confirm": "Confirmar turno",
+    "confirmRequiresSupervisor": "Solo supervisores y administradores pueden confirmar turnos.",
     "confirmedSuccess": "Turno confirmado.",
     "statuses": {
       "pending": "Pendiente",
