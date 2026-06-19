@@ -54,6 +54,11 @@ export default async function DashboardAppointmentPage({
     appointment.appointment_technicians
       .map((assignment) => assignment.technicians.name)
       .join(", ") || t("unassigned");
+  const availableTechnicians = activeTechnicians.filter(
+    (technician) => !assignedTechnicianIds.has(technician.id),
+  );
+  const allTechniciansAssigned =
+    activeTechnicians.length > 0 && availableTechnicians.length === 0;
 
   return (
     <section className="grid gap-6">
@@ -143,6 +148,14 @@ export default async function DashboardAppointmentPage({
               {appointment.problem_description}
             </dd>
           </div>
+          {canAssignStatus(appointment.status) ? (
+            <div className="sm:col-span-2">
+              <dt className="font-bold text-slate-500">{t("technicians")}</dt>
+              <dd className="mt-1 font-semibold text-slate-950">
+                {assignedTechnicianLabel}
+              </dd>
+            </div>
+          ) : null}
           {appointment.client_notes ? (
             <div className="sm:col-span-2">
               <dt className="font-bold text-slate-500">{t("notes")}</dt>
@@ -159,38 +172,51 @@ export default async function DashboardAppointmentPage({
               {t("assignTechnicians")}
             </h2>
             {activeTechnicians.length > 0 ? (
-              <form action={assignWithLocale} className="mt-4 grid gap-3">
-                {activeTechnicians.map((technician) => (
-                  <label
-                    className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900"
-                    key={technician.id}
-                  >
+              allTechniciansAssigned ? (
+                <p className="mt-3 text-sm font-semibold text-slate-500">
+                  {t("allTechniciansAssigned")}
+                </p>
+              ) : (
+                <form action={assignWithLocale} className="mt-4 grid gap-3">
+                  {appointment.appointment_technicians.map((assignment) => (
                     <input
-                      className="size-4 rounded border-slate-300"
-                      defaultChecked={assignedTechnicianIds.has(technician.id)}
-                      disabled={!canManageAppointment}
+                      key={assignment.technician_id}
                       name="technicianIds"
-                      type="checkbox"
-                      value={technician.id}
+                      type="hidden"
+                      value={assignment.technician_id}
                     />
-                    {technician.name}
-                  </label>
-                ))}
-                <div className="flex flex-col gap-2">
-                  <button
-                    className="w-fit rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:bg-slate-300"
-                    disabled={!canManageAppointment}
-                    type="submit"
-                  >
-                    {t("saveAssignments")}
-                  </button>
-                  {!canManageAppointment ? (
-                    <p className="text-sm font-semibold text-slate-500">
-                      {t("assignRequiresSupervisor")}
-                    </p>
-                  ) : null}
-                </div>
-              </form>
+                  ))}
+                  {availableTechnicians.map((technician) => (
+                    <label
+                      className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900"
+                      key={technician.id}
+                    >
+                      <input
+                        className="size-4 rounded border-slate-300"
+                        disabled={!canManageAppointment}
+                        name="technicianIds"
+                        type="checkbox"
+                        value={technician.id}
+                      />
+                      {technician.name}
+                    </label>
+                  ))}
+                  <div className="flex flex-col gap-2">
+                    <button
+                      className="w-fit rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:bg-slate-300"
+                      disabled={!canManageAppointment}
+                      type="submit"
+                    >
+                      {t("saveAssignments")}
+                    </button>
+                    {!canManageAppointment ? (
+                      <p className="text-sm font-semibold text-slate-500">
+                        {t("assignRequiresSupervisor")}
+                      </p>
+                    ) : null}
+                  </div>
+                </form>
+              )
             ) : (
               <p className="mt-3 text-sm font-semibold text-slate-500">
                 {t("noTechniciansAvailable")}
