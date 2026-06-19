@@ -122,6 +122,8 @@
     "problem": "Problem",
     "notes": "Client notes",
     "backToRequests": "Back to requests",
+    "confirm": "Confirm appointment",
+    "confirmedSuccess": "Appointment confirmed.",
     "statuses": {
       "pending": "Pending",
       "confirmed": "Confirmed",

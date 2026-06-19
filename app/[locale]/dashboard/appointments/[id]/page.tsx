@@ -2,7 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { isConfirmSuccess } from "@/lib/appointments/constants";
 import { getAppointmentDetailPageData } from "@/lib/appointments/queries";
+import { pendingRequestStatuses } from "@/lib/requests/types";
+
+import { confirmAppointment } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -14,12 +18,19 @@ function formatDateTime(value: string, locale: string, timezone: string) {
   }).format(new Date(value));
 }
 
+function canConfirmStatus(status: string) {
+  return (pendingRequestStatuses as readonly string[]).includes(status);
+}
+
 export default async function DashboardAppointmentPage({
   params,
+  searchParams,
 }: Readonly<{
   params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<{ confirmed?: string }>;
 }>) {
   const { locale, id } = await params;
+  const { confirmed } = await searchParams;
   const pageData = await getAppointmentDetailPageData(id);
 
   if (!pageData) {
@@ -28,6 +39,7 @@ export default async function DashboardAppointmentPage({
 
   const { organization, appointment } = pageData;
   const t = await getTranslations({ locale, namespace: "AppointmentDetail" });
+  const confirmWithLocale = confirmAppointment.bind(null, locale, id);
   const appointmentTime =
     appointment.confirmed_start_at ?? appointment.requested_start_at;
   const technicians = appointment.appointment_technicians
@@ -36,6 +48,12 @@ export default async function DashboardAppointmentPage({
 
   return (
     <section className="grid gap-6">
+      {isConfirmSuccess(confirmed) ? (
+        <p className="rounded-[1.75rem] bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-900 ring-1 ring-emerald-200">
+          {t("confirmedSuccess")}
+        </p>
+      ) : null}
+
       <div className="rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-8">
         <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
           {t("eyebrow")}
@@ -127,12 +145,24 @@ export default async function DashboardAppointmentPage({
           ) : null}
         </dl>
 
-        <Link
-          className="mt-8 inline-flex rounded-full border border-slate-200 px-5 py-2 text-sm font-bold text-slate-700 hover:border-sky-300 hover:bg-sky-50"
-          href={`/${locale}/dashboard/requests`}
-        >
-          {t("backToRequests")}
-        </Link>
+        <div className="mt-8 flex flex-wrap gap-3">
+          {canConfirmStatus(appointment.status) ? (
+            <form action={confirmWithLocale}>
+              <button
+                className="rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800"
+                type="submit"
+              >
+                {t("confirm")}
+              </button>
+            </form>
+          ) : null}
+          <Link
+            className="inline-flex rounded-full border border-slate-200 px-5 py-2 text-sm font-bold text-slate-700 hover:border-sky-300 hover:bg-sky-50"
+            href={`/${locale}/dashboard/requests`}
+          >
+            {t("backToRequests")}
+          </Link>
+        </div>
       </div>
     </section>
   );

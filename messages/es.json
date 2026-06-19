@@ -122,6 +122,8 @@
     "problem": "Problema",
     "notes": "Notas del cliente",
     "backToRequests": "Volver a solicitudes",
+    "confirm": "Confirmar turno",
+    "confirmedSuccess": "Turno confirmado.",
     "statuses": {
       "pending": "Pendiente",
       "confirmed": "Confirmado",
