@@ -125,6 +125,11 @@
     "confirm": "Confirmar horário",
     "confirmRequiresSupervisor": "Somente supervisores e administradores podem confirmar horários.",
     "confirmedSuccess": "Horário confirmado.",
+    "assignTechnicians": "Atribuir técnicos",
+    "saveAssignments": "Salvar atribuição",
+    "assignRequiresSupervisor": "Somente supervisores e administradores podem atribuir técnicos.",
+    "assignedSuccess": "Técnicos atribuídos.",
+    "noTechniciansAvailable": "Não há técnicos ativos disponíveis.",
     "statuses": {
       "pending": "Pendente",
       "confirmed": "Confirmado",

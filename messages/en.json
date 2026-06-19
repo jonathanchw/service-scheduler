@@ -125,6 +125,11 @@
     "confirm": "Confirm appointment",
     "confirmRequiresSupervisor": "Only supervisors and admins can confirm appointments.",
     "confirmedSuccess": "Appointment confirmed.",
+    "assignTechnicians": "Assign technicians",
+    "saveAssignments": "Save assignments",
+    "assignRequiresSupervisor": "Only supervisors and admins can assign technicians.",
+    "assignedSuccess": "Technicians assigned.",
+    "noTechniciansAvailable": "No active technicians are available.",
     "statuses": {
       "pending": "Pending",
       "confirmed": "Confirmed",
