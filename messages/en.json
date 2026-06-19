@@ -123,6 +123,7 @@
     "notes": "Client notes",
     "backToRequests": "Back to requests",
     "confirm": "Confirm appointment",
+    "confirmRequiresSupervisor": "Only supervisors and admins can confirm appointments.",
     "confirmedSuccess": "Appointment confirmed.",
     "statuses": {
       "pending": "Pending",

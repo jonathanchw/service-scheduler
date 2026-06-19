@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { getUserRole, hasMinimumRole } from "@/lib/auth";
 import { isConfirmSuccess } from "@/lib/appointments/constants";
 import { getAppointmentDetailPageData } from "@/lib/appointments/queries";
 import { pendingRequestStatuses } from "@/lib/requests/types";
@@ -38,6 +39,8 @@ export default async function DashboardAppointmentPage({
   }
 
   const { organization, appointment } = pageData;
+  const userRole = await getUserRole();
+  const canConfirmAppointment = hasMinimumRole(userRole, "supervisor");
   const t = await getTranslations({ locale, namespace: "AppointmentDetail" });
   const confirmWithLocale = confirmAppointment.bind(null, locale, id);
   const appointmentTime =
@@ -145,16 +148,24 @@ export default async function DashboardAppointmentPage({
           ) : null}
         </dl>
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-col gap-3">
           {canConfirmStatus(appointment.status) ? (
-            <form action={confirmWithLocale}>
-              <button
-                className="rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800"
-                type="submit"
-              >
-                {t("confirm")}
-              </button>
-            </form>
+            <div className="flex flex-col gap-2">
+              <form action={confirmWithLocale}>
+                <button
+                  className="rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:bg-slate-300"
+                  disabled={!canConfirmAppointment}
+                  type="submit"
+                >
+                  {t("confirm")}
+                </button>
+              </form>
+              {!canConfirmAppointment ? (
+                <p className="text-sm font-semibold text-slate-500">
+                  {t("confirmRequiresSupervisor")}
+                </p>
+              ) : null}
+            </div>
           ) : null}
           <Link
             className="inline-flex rounded-full border border-slate-200 px-5 py-2 text-sm font-bold text-slate-700 hover:border-sky-300 hover:bg-sky-50"
