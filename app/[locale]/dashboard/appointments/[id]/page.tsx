@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { getUserRole, hasMinimumRole } from "@/lib/auth";
+import { durationPresets } from "@/lib/appointments/constants";
 import { canAssignStatus, canConfirmStatus } from "@/lib/appointments/status";
 import {
   isAssignSuccess,
@@ -14,6 +15,7 @@ import {
   assignTechnicians,
   confirmAppointment,
   removeTechnician,
+  updateEstimatedDuration,
 } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +58,10 @@ export default async function DashboardAppointmentPage({
   );
   const canEditAssignments =
     canManageAppointment && canAssignStatus(appointment.status);
+  const canEditDuration = canEditAssignments;
+  const effectiveDurationMinutes =
+    appointment.estimated_duration_minutes ??
+    appointment.services.default_duration_minutes;
   const availableTechnicians = activeTechnicians.filter(
     (technician) => !assignedTechnicianIds.has(technician.id),
   );
@@ -142,6 +148,45 @@ export default async function DashboardAppointmentPage({
             <dd className="mt-1 font-semibold text-slate-950">
               {appointment.equipment_type}
               {appointment.brand_model ? ` · ${appointment.brand_model}` : ""}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-bold text-slate-500">
+              {t("estimatedDuration")}
+            </dt>
+            <dd className="mt-2">
+              {canEditDuration ? (
+                <div className="flex flex-wrap gap-2">
+                  {durationPresets.map((minutes) => (
+                    <form
+                      action={updateEstimatedDuration.bind(
+                        null,
+                        locale,
+                        id,
+                        minutes,
+                      )}
+                      className="inline-flex"
+                      key={minutes}
+                    >
+                      <button
+                        aria-pressed={effectiveDurationMinutes === minutes}
+                        className={
+                          effectiveDurationMinutes === minutes
+                            ? "rounded-full bg-sky-50 px-4 py-2 text-sm font-bold text-sky-900 ring-2 ring-sky-300"
+                            : "rounded-full border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:border-sky-300 hover:bg-sky-50"
+                        }
+                        type="submit"
+                      >
+                        {t("durationPreset", { minutes })}
+                      </button>
+                    </form>
+                  ))}
+                </div>
+              ) : (
+                <span className="font-semibold text-slate-950">
+                  {t("durationPreset", { minutes: effectiveDurationMinutes })}
+                </span>
+              )}
             </dd>
           </div>
           <div className="sm:col-span-2">

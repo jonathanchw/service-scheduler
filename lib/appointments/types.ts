@@ -11,6 +11,8 @@ export type AppointmentDetail = {
   status: string;
   requested_start_at: string;
   confirmed_start_at: string | null;
+  estimated_duration_minutes: number | null;
+  travel_buffer_minutes: number;
   created_at: string;
   address: string;
   city: string;
@@ -26,6 +28,7 @@ export type AppointmentDetail = {
   services: {
     name: string;
     is_emergency: boolean;
+    default_duration_minutes: number;
   };
   appointment_technicians: {
     technician_id: string;

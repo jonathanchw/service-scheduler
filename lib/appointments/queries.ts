@@ -27,6 +27,8 @@ export async function getAppointmentDetailPageData(
         status,
         requested_start_at,
         confirmed_start_at,
+        estimated_duration_minutes,
+        travel_buffer_minutes,
         created_at,
         address,
         city,
@@ -35,7 +37,7 @@ export async function getAppointmentDetailPageData(
         problem_description,
         client_notes,
         clients (name, email, phone),
-        services (name, is_emergency),
+        services (name, is_emergency, default_duration_minutes),
         appointment_technicians (
           technician_id,
           technicians (name)

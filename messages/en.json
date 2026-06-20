@@ -132,6 +132,8 @@
     "noTechniciansAvailable": "No active technicians are available.",
     "allTechniciansAssigned": "All technicians are assigned to this appointment.",
     "removeTechnician": "Remove {name}",
+    "estimatedDuration": "Estimated duration",
+    "durationPreset": "{minutes} min",
     "statuses": {
       "pending": "Pending",
       "confirmed": "Confirmed",
