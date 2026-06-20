@@ -132,6 +132,8 @@
     "noTechniciansAvailable": "Não há técnicos ativos disponíveis.",
     "allTechniciansAssigned": "Todos os técnicos estão atribuídos a este horário.",
     "removeTechnician": "Remover {name}",
+    "estimatedDuration": "Duração estimada",
+    "durationPreset": "{minutes} min",
     "statuses": {
       "pending": "Pendente",
       "confirmed": "Confirmado",
