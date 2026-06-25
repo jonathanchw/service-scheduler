@@ -134,6 +134,8 @@
     "removeTechnician": "Remove {name}",
     "estimatedDuration": "Estimated duration",
     "durationPreset": "{minutes} min",
+    "schedulingConflict": "One or more technicians are already assigned to another confirmed appointment during this time.",
+    "technicianUnavailable": "Unavailable",
     "statuses": {
       "pending": "Pending",
       "confirmed": "Confirmed",

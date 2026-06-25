@@ -8,8 +8,11 @@ import { canAssignStatus, canConfirmStatus } from "@/lib/appointments/status";
 import {
   isAssignSuccess,
   isConfirmSuccess,
+  isSchedulingConflict,
 } from "@/lib/appointments/success-query";
 import { getAppointmentDetailPageData } from "@/lib/appointments/queries";
+import { getAppointmentSchedulingWindow } from "@/lib/scheduling/appointment-window";
+import { getBusyTechnicianIds } from "@/lib/scheduling/conflicts";
 
 import {
   assignTechnicians,
@@ -33,10 +36,10 @@ export default async function DashboardAppointmentPage({
   searchParams,
 }: Readonly<{
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ confirmed?: string; assigned?: string }>;
+  searchParams: Promise<{ confirmed?: string; assigned?: string; conflict?: string }>;
 }>) {
   const { locale, id } = await params;
-  const { confirmed, assigned } = await searchParams;
+  const { confirmed, assigned, conflict } = await searchParams;
   const pageData = await getAppointmentDetailPageData(id);
 
   if (!pageData) {
@@ -62,6 +65,15 @@ export default async function DashboardAppointmentPage({
   const effectiveDurationMinutes =
     appointment.estimated_duration_minutes ??
     appointment.services.default_duration_minutes;
+  const schedulingWindow = getAppointmentSchedulingWindow(appointment);
+  const busyTechnicianIds = await getBusyTechnicianIds({
+    organizationId: organization.id,
+    appointmentId: appointment.id,
+    technicianIds: activeTechnicians.map((technician) => technician.id),
+    startAt: schedulingWindow.startAt,
+    durationMinutes: schedulingWindow.durationMinutes,
+    travelBufferMinutes: schedulingWindow.travelBufferMinutes,
+  });
   const availableTechnicians = activeTechnicians.filter(
     (technician) => !assignedTechnicianIds.has(technician.id),
   );
@@ -78,6 +90,11 @@ export default async function DashboardAppointmentPage({
       {isAssignSuccess(assigned) ? (
         <p className="rounded-[1.75rem] bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-900 ring-1 ring-emerald-200">
           {t("assignedSuccess")}
+        </p>
+      ) : null}
+      {isSchedulingConflict(conflict) ? (
+        <p className="rounded-[1.75rem] bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-900 ring-1 ring-rose-200">
+          {t("schedulingConflict")}
         </p>
       ) : null}
 
@@ -267,21 +284,36 @@ export default async function DashboardAppointmentPage({
                       value={assignment.technician_id}
                     />
                   ))}
-                  {availableTechnicians.map((technician) => (
-                    <label
-                      className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900"
-                      key={technician.id}
-                    >
-                      <input
-                        className="size-4 rounded border-slate-300"
-                        disabled={!canManageAppointment}
-                        name="technicianIds"
-                        type="checkbox"
-                        value={technician.id}
-                      />
-                      {technician.name}
-                    </label>
-                  ))}
+                  {availableTechnicians.map((technician) => {
+                    const isBusy = busyTechnicianIds.has(technician.id);
+
+                    return (
+                      <label
+                        className={
+                          isBusy
+                            ? "flex items-center gap-3 rounded-2xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-400"
+                            : "flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900"
+                        }
+                        key={technician.id}
+                      >
+                        <input
+                          className="size-4 rounded border-slate-300"
+                          disabled={!canManageAppointment || isBusy}
+                          name="technicianIds"
+                          type="checkbox"
+                          value={technician.id}
+                        />
+                        <span>
+                          {technician.name}
+                          {isBusy ? (
+                            <span className="ml-2 text-xs font-semibold uppercase tracking-wide text-rose-600">
+                              {t("technicianUnavailable")}
+                            </span>
+                          ) : null}
+                        </span>
+                      </label>
+                    );
+                  })}
                   <div className="flex flex-col gap-2">
                     <button
                       className="w-fit rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:bg-slate-300"

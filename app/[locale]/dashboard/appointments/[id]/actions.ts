@@ -10,24 +10,47 @@ import {
   confirmSuccessParam,
   confirmSuccessValue,
   durationPresets,
+  schedulingConflictParam,
+  schedulingConflictValue,
 } from "@/lib/appointments/constants";
 import { canAssignStatus, canConfirmStatus } from "@/lib/appointments/status";
 import { requireRole } from "@/lib/auth";
+import { getAppointmentSchedulingWindow } from "@/lib/scheduling/appointment-window";
+import { getBlockedWindowEnd } from "@/lib/scheduling/blocked-window";
+import { findTechnicianSchedulingConflicts } from "@/lib/scheduling/conflicts";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 function readTechnicianIds(formData: FormData) {
   return formData.getAll("technicianIds").map(String).filter(Boolean);
 }
 
-function getConfirmedEndAt(
-  startAt: string,
-  durationMinutes: number,
-  travelBufferMinutes: number,
-) {
-  return new Date(
-    new Date(startAt).getTime() +
-      (durationMinutes + travelBufferMinutes) * 60_000,
-  ).toISOString();
+function redirectOnSchedulingConflict(locale: string, appointmentId: string) {
+  redirect(
+    `/${locale}/dashboard/appointments/${appointmentId}?${schedulingConflictParam}=${schedulingConflictValue}`,
+  );
+}
+
+async function assertNoSchedulingConflicts(input: {
+  organizationId: string;
+  appointmentId: string;
+  technicianIds: string[];
+  startAt: string;
+  durationMinutes: number;
+  travelBufferMinutes: number;
+  locale: string;
+}) {
+  const conflicts = await findTechnicianSchedulingConflicts({
+    organizationId: input.organizationId,
+    appointmentId: input.appointmentId,
+    technicianIds: input.technicianIds,
+    startAt: input.startAt,
+    durationMinutes: input.durationMinutes,
+    travelBufferMinutes: input.travelBufferMinutes,
+  });
+
+  if (conflicts.length > 0) {
+    redirectOnSchedulingConflict(input.locale, input.appointmentId);
+  }
 }
 
 export async function confirmAppointment(
@@ -45,9 +68,11 @@ export async function confirmAppointment(
         id,
         status,
         requested_start_at,
+        confirmed_start_at,
         estimated_duration_minutes,
         travel_buffer_minutes,
-        services (default_duration_minutes)
+        services (default_duration_minutes),
+        appointment_technicians (technician_id)
       `,
     )
     .eq("id", appointmentId)
@@ -62,24 +87,37 @@ export async function confirmAppointment(
     throw new Error("Appointment cannot be confirmed.");
   }
 
-  const serviceRelation = appointment.services as
-    | { default_duration_minutes: number }
-    | { default_duration_minutes: number }[];
-  const service = Array.isArray(serviceRelation)
-    ? serviceRelation[0]
-    : serviceRelation;
+  const { startAt, durationMinutes, travelBufferMinutes } =
+    getAppointmentSchedulingWindow(appointment);
+  const assignmentRows = appointment.appointment_technicians as
+    | { technician_id: string }[]
+    | { technician_id: string }
+    | null;
+  const technicianIds = (
+    Array.isArray(assignmentRows)
+      ? assignmentRows
+      : assignmentRows
+        ? [assignmentRows]
+        : []
+  ).map((assignment) => assignment.technician_id);
 
-  if (!service) {
-    throw new Error("Service not found.");
+  if (technicianIds.length > 0) {
+    await assertNoSchedulingConflicts({
+      organizationId: organization.id,
+      appointmentId,
+      technicianIds,
+      startAt,
+      durationMinutes,
+      travelBufferMinutes,
+      locale,
+    });
   }
 
-  const durationMinutes =
-    appointment.estimated_duration_minutes ?? service.default_duration_minutes;
   const confirmedStartAt = appointment.requested_start_at;
-  const confirmedEndAt = getConfirmedEndAt(
+  const confirmedEndAt = getBlockedWindowEnd(
     confirmedStartAt,
     durationMinutes,
-    appointment.travel_buffer_minutes,
+    travelBufferMinutes,
   );
 
   const { error: updateError } = await supabase
@@ -130,7 +168,17 @@ export async function assignTechnicians(
 
   const { data: appointment, error } = await supabase
     .from("appointments")
-    .select("id, status")
+    .select(
+      `
+        id,
+        status,
+        requested_start_at,
+        confirmed_start_at,
+        estimated_duration_minutes,
+        travel_buffer_minutes,
+        services (default_duration_minutes)
+      `,
+    )
     .eq("id", appointmentId)
     .eq("organization_id", organization.id)
     .maybeSingle();
@@ -154,6 +202,19 @@ export async function assignTechnicians(
     if (techniciansError || technicians?.length !== technicianIds.length) {
       throw new Error("Invalid technician selection.");
     }
+
+    const { startAt, durationMinutes, travelBufferMinutes } =
+      getAppointmentSchedulingWindow(appointment);
+
+    await assertNoSchedulingConflicts({
+      organizationId: organization.id,
+      appointmentId,
+      technicianIds,
+      startAt,
+      durationMinutes,
+      travelBufferMinutes,
+      locale,
+    });
   }
 
   const { error: deleteError } = await supabase
@@ -278,7 +339,15 @@ export async function updateEstimatedDuration(
 
   const { data: appointment, error } = await supabase
     .from("appointments")
-    .select("id, status, confirmed_start_at, travel_buffer_minutes")
+    .select(
+      `
+        id,
+        status,
+        confirmed_start_at,
+        travel_buffer_minutes,
+        appointment_technicians (technician_id)
+      `,
+    )
     .eq("id", appointmentId)
     .eq("organization_id", organization.id)
     .maybeSingle();
@@ -291,6 +360,32 @@ export async function updateEstimatedDuration(
     throw new Error("Duration cannot be updated for this appointment.");
   }
 
+  if (appointment.status === "confirmed" && appointment.confirmed_start_at) {
+    const assignmentRows = appointment.appointment_technicians as
+      | { technician_id: string }[]
+      | { technician_id: string }
+      | null;
+    const technicianIds = (
+      Array.isArray(assignmentRows)
+        ? assignmentRows
+        : assignmentRows
+          ? [assignmentRows]
+          : []
+    ).map((assignment) => assignment.technician_id);
+
+    if (technicianIds.length > 0) {
+      await assertNoSchedulingConflicts({
+        organizationId: organization.id,
+        appointmentId,
+        technicianIds,
+        startAt: appointment.confirmed_start_at,
+        durationMinutes,
+        travelBufferMinutes: appointment.travel_buffer_minutes,
+        locale,
+      });
+    }
+  }
+
   const updatePayload: {
     estimated_duration_minutes: number;
     updated_at: string;
@@ -301,7 +396,7 @@ export async function updateEstimatedDuration(
   };
 
   if (appointment.status === "confirmed" && appointment.confirmed_start_at) {
-    updatePayload.confirmed_end_at = getConfirmedEndAt(
+    updatePayload.confirmed_end_at = getBlockedWindowEnd(
       appointment.confirmed_start_at,
       durationMinutes,
       appointment.travel_buffer_minutes,
