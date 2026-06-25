@@ -134,6 +134,8 @@
     "removeTechnician": "Quitar {name}",
     "estimatedDuration": "Duración estimada",
     "durationPreset": "{minutes} min",
+    "schedulingConflict": "Uno o más técnicos ya están asignados a otro turno confirmado en ese horario.",
+    "technicianUnavailable": "No disponible",
     "statuses": {
       "pending": "Pendiente",
       "confirmed": "Confirmado",
