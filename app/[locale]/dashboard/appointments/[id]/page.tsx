@@ -36,7 +36,11 @@ export default async function DashboardAppointmentPage({
   searchParams,
 }: Readonly<{
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ confirmed?: string; assigned?: string; conflict?: string }>;
+  searchParams: Promise<{
+    confirmed?: string;
+    assigned?: string;
+    conflict?: string;
+  }>;
 }>) {
   const { locale, id } = await params;
   const { confirmed, assigned, conflict } = await searchParams;

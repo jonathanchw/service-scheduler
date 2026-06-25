@@ -9,9 +9,7 @@ type AppointmentSchedulingSource = {
     | null;
 };
 
-function resolveService(
-  services: AppointmentSchedulingSource["services"],
-) {
+function resolveService(services: AppointmentSchedulingSource["services"]) {
   if (!services) {
     return null;
   }
