@@ -122,6 +122,7 @@
     "problem": "Problema",
     "notes": "Notas del cliente",
     "backToRequests": "Volver a solicitudes",
+    "backToAgenda": "Volver a agenda",
     "confirm": "Confirmar turno",
     "confirmRequiresSupervisor": "Solo supervisores y administradores pueden confirmar turnos.",
     "confirmedSuccess": "Turno confirmado.",

@@ -122,6 +122,7 @@
     "problem": "Problem",
     "notes": "Client notes",
     "backToRequests": "Back to requests",
+    "backToAgenda": "Back to agenda",
     "confirm": "Confirm appointment",
     "confirmRequiresSupervisor": "Only supervisors and admins can confirm appointments.",
     "confirmedSuccess": "Appointment confirmed.",

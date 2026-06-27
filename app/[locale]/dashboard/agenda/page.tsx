@@ -107,8 +107,9 @@ export default async function AgendaPage({
                 .join(", ");
 
               return (
-                <article
-                  className="rounded-[1.75rem] bg-white p-5 shadow-sm ring-1 ring-slate-200"
+                <Link
+                  className="block rounded-[1.75rem] bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:ring-sky-300"
+                  href={`/${locale}/dashboard/appointments/${appointment.id}`}
                   key={appointment.id}
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -150,7 +151,7 @@ export default async function AgendaPage({
                       </dd>
                     </div>
                   </dl>
-                </article>
+                </Link>
               );
             })}
           </div>
@@ -172,8 +173,9 @@ export default async function AgendaPage({
                         appointment.requested_start_at;
 
                       return (
-                        <div
-                          className="flex flex-col gap-2 rounded-2xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                        <Link
+                          className="flex flex-col gap-2 rounded-2xl bg-slate-50 p-4 transition hover:bg-sky-50 sm:flex-row sm:items-center sm:justify-between"
+                          href={`/${locale}/dashboard/appointments/${appointment.id}`}
                           key={appointment.id}
                         >
                           <div>
@@ -192,7 +194,7 @@ export default async function AgendaPage({
                           <span className="w-fit rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-wide text-sky-800 ring-1 ring-sky-100">
                             {t(`statuses.${appointment.status}`)}
                           </span>
-                        </div>
+                        </Link>
                       );
                     })}
                   </div>
