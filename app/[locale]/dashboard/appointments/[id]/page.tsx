@@ -67,23 +67,37 @@ export default async function DashboardAppointmentPage({
   const canEditAssignments =
     canManageAppointment && canAssignStatus(appointment.status);
   const canEditDuration = canEditAssignments;
+  const backHref = canManageAppointment
+    ? `/${locale}/dashboard/requests`
+    : `/${locale}/dashboard/agenda`;
+  const backLabel = canManageAppointment
+    ? t("backToRequests")
+    : t("backToAgenda");
   const effectiveDurationMinutes =
     appointment.estimated_duration_minutes ??
     appointment.services.default_duration_minutes;
-  const schedulingWindow = getAppointmentSchedulingWindow(appointment);
-  const busyTechnicianIds = await getBusyTechnicianIds({
-    organizationId: organization.id,
-    appointmentId: appointment.id,
-    technicianIds: activeTechnicians.map((technician) => technician.id),
-    startAt: schedulingWindow.startAt,
-    durationMinutes: schedulingWindow.durationMinutes,
-    travelBufferMinutes: schedulingWindow.travelBufferMinutes,
-  });
-  const availableTechnicians = activeTechnicians.filter(
-    (technician) => !assignedTechnicianIds.has(technician.id),
-  );
+  const schedulingWindow = canEditAssignments
+    ? getAppointmentSchedulingWindow(appointment)
+    : null;
+  const busyTechnicianIds = schedulingWindow
+    ? await getBusyTechnicianIds({
+        organizationId: organization.id,
+        appointmentId: appointment.id,
+        technicianIds: activeTechnicians.map((technician) => technician.id),
+        startAt: schedulingWindow.startAt,
+        durationMinutes: schedulingWindow.durationMinutes,
+        travelBufferMinutes: schedulingWindow.travelBufferMinutes,
+      })
+    : new Set<string>();
+  const availableTechnicians = canEditAssignments
+    ? activeTechnicians.filter(
+        (technician) => !assignedTechnicianIds.has(technician.id),
+      )
+    : [];
   const allTechniciansAssigned =
-    activeTechnicians.length > 0 && availableTechnicians.length === 0;
+    canEditAssignments &&
+    activeTechnicians.length > 0 &&
+    availableTechnicians.length === 0;
 
   return (
     <section className="grid gap-6">
@@ -269,7 +283,7 @@ export default async function DashboardAppointmentPage({
           ) : null}
         </dl>
 
-        {canAssignStatus(appointment.status) ? (
+        {canEditAssignments ? (
           <div className="mt-8 border-t border-slate-200 pt-8">
             <h2 className="text-lg font-black text-slate-950">
               {t("assignTechnicians")}
@@ -327,11 +341,6 @@ export default async function DashboardAppointmentPage({
                     >
                       {t("saveAssignments")}
                     </SubmitButton>
-                    {!canManageAppointment ? (
-                      <p className="text-sm font-semibold text-slate-500">
-                        {t("assignRequiresSupervisor")}
-                      </p>
-                    ) : null}
                   </div>
                 </form>
               )
@@ -341,7 +350,7 @@ export default async function DashboardAppointmentPage({
               </p>
             )}
           </div>
-        ) : (
+        ) : !canAssignStatus(appointment.status) ? (
           <div className="mt-8 border-t border-slate-200 pt-8">
             <p className="text-sm font-bold text-slate-500">
               {t("technicians")}
@@ -363,10 +372,10 @@ export default async function DashboardAppointmentPage({
               )}
             </div>
           </div>
-        )}
+        ) : null}
 
         <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-8">
-          {canConfirmStatus(appointment.status) ? (
+          {canManageAppointment && canConfirmStatus(appointment.status) ? (
             <div className="flex flex-col gap-2">
               <form action={confirmWithLocale}>
                 <SubmitButton
@@ -377,18 +386,13 @@ export default async function DashboardAppointmentPage({
                   {t("confirm")}
                 </SubmitButton>
               </form>
-              {!canManageAppointment ? (
-                <p className="text-sm font-semibold text-slate-500">
-                  {t("confirmRequiresSupervisor")}
-                </p>
-              ) : null}
             </div>
           ) : null}
           <Link
             className="inline-flex w-fit rounded-full border border-slate-200 px-5 py-2 text-sm font-bold text-slate-700 hover:border-sky-300 hover:bg-sky-50"
-            href={`/${locale}/dashboard/requests`}
+            href={backHref}
           >
-            {t("backToRequests")}
+            {backLabel}
           </Link>
         </div>
       </div>
