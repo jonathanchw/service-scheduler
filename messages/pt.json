@@ -239,5 +239,15 @@
       "description": "Um supervisor revisará o serviço, o horário escolhido e os dados enviados antes de confirmar a visita.",
       "cta": "Voltar ao início"
     }
+  },
+  "AppointmentRequestEmail": {
+    "subject": "Recebemos sua solicitação de horário",
+    "greeting": "Olá {name},",
+    "intro": "Recebemos sua solicitação e ela está pendente de aprovação do supervisor.",
+    "service": "Serviço",
+    "dateTime": "Data e horário solicitados",
+    "address": "Endereço",
+    "linkIntro": "Ver seu horário",
+    "footer": "Entraremos em contato após revisar a solicitação."
   }
 }

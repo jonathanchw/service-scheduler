@@ -6,6 +6,10 @@ import {
   createAppointmentToken,
   hashAppointmentToken,
 } from "@/lib/appointment-tokens";
+import {
+  buildAppointmentUrl,
+  sendAppointmentRequestEmail,
+} from "@/lib/email/send-appointment-request-email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type SupabaseAdminClient = ReturnType<typeof createSupabaseAdminClient>;
@@ -173,14 +177,14 @@ async function getOrganization(supabase: SupabaseAdminClient) {
   };
 }
 
-async function getServiceId(
+async function getService(
   supabase: SupabaseAdminClient,
   organizationId: string,
   serviceSlug: string,
 ) {
   const { data: service, error: serviceError } = await supabase
     .from("services")
-    .select("id")
+    .select("id, name")
     .eq("organization_id", organizationId)
     .eq("slug", serviceSlug)
     .eq("active", true)
@@ -190,7 +194,10 @@ async function getServiceId(
     throw new Error("Service not found.");
   }
 
-  return service.id as string;
+  return {
+    id: service.id as string,
+    name: service.name as string,
+  };
 }
 
 async function findOrCreateClient(
@@ -273,7 +280,7 @@ async function createPendingAppointment(
     throw new Error("Could not create appointment.");
   }
 
-  return secureToken;
+  return { secureToken, requestedStartAt };
 }
 
 export async function createAppointmentRequest(
@@ -284,21 +291,37 @@ export async function createAppointmentRequest(
   const supabase = createSupabaseAdminClient();
 
   const organization = await getOrganization(supabase);
-  const serviceId = await getServiceId(
+  const service = await getService(
     supabase,
     organization.id,
     booking.serviceSlug,
   );
   const clientId = await findOrCreateClient(supabase, organization.id, booking);
 
-  const secureToken = await createPendingAppointment(
+  const { secureToken, requestedStartAt } = await createPendingAppointment(
     supabase,
     organization.id,
-    serviceId,
+    service.id,
     clientId,
     booking,
     organization.timezone,
   );
+
+  const appointmentUrl = buildAppointmentUrl(locale, secureToken);
+
+  if (appointmentUrl) {
+    await sendAppointmentRequestEmail({
+      locale,
+      to: booking.email,
+      clientName: booking.name,
+      serviceName: service.name,
+      requestedStartAt,
+      timezone: organization.timezone,
+      address: booking.address,
+      city: booking.city,
+      appointmentUrl,
+    });
+  }
 
   redirect(getAppointmentPath(locale, secureToken));
 }
