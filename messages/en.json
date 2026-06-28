@@ -239,5 +239,15 @@
       "description": "A supervisor will review the service, selected time, and submitted details before confirming the visit.",
       "cta": "Back to home"
     }
+  },
+  "AppointmentRequestEmail": {
+    "subject": "We received your appointment request",
+    "greeting": "Hi {name},",
+    "intro": "Your request was received and is pending supervisor approval.",
+    "service": "Service",
+    "dateTime": "Requested date and time",
+    "address": "Address",
+    "linkIntro": "View your appointment",
+    "footer": "We will contact you after reviewing your request."
   }
 }
